@@ -5,6 +5,20 @@ function ProductList({ onHomeClick }) {
     const [showCart, setShowCart] = useState(false);
     const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
     const [addedToCart, setAddedToCart] = useState({});
+    const dispatch = useDispatch();
+    const cartItems = useSelector((state) => state.cart.items);
+
+    const calculateTotalQuantity = () => {
+        return CartItems ? CartItems.reduce((total, item) => total + item.quantity, 0) : 0;
+         };
+
+    const handleAddToCart = (product) => {
+        dispatch(addItem(product)); // Dispatch the action to add the product to the cart (Redux action)
+        setAddedToCart((prevState) => ({ // Update the local state to reflect that the product has been added
+          ...prevState, // Spread the previous state to retain existing entries
+          [product.name]: true, // Set the current product's name as a key with value 'true' to mark it as added
+        }));
+      };
 
     const plantsArray = [
         {
@@ -303,15 +317,6 @@ function ProductList({ onHomeClick }) {
     </div>
   </div>
 ))}
-
-const handleAddToCart = (product) => {
-  dispatch(addItem(product)); // Dispatch the action to add the product to the cart (Redux action)
-  setAddedToCart((prevState) => ({ // Update the local state to reflect that the product has been added
-    ...prevState, // Spread the previous state to retain existing entries
-    [product.name]: true, // Set the current product's name as a key with value 'true' to mark it as added
-  }));
-};
-
                 </div>
             ) : (
                 <CartItem onContinueShopping={handleContinueShopping} />
